@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Health Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #webchat {
+            width: 400px;
+            height: 600px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        // Load the Bot Framework Web Chat script
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.botframework.com/botframework-webchat/latest/webchat.js';
+            script.async = true;
+            document.head.appendChild(script);
+        })();
+    </script>
+</head>
+<body>
+    <div id="webchat"></div>
+    <script>
+        window.addEventListener('load', function() {
+            const secret = 'H9Q4in3EBAo.RfhvMPfg6P4thAZ4uon-AcB0hXMU73WBXt10Ys9ozag';  // Replace with your Web Chat secret
+            const styleOptions = {
+                botAvatarImage: 'https://example.com/bot-avatar.png',  // Optional: Set your bot's avatar image
+                botAvatarInitials: 'Bot',  // Optional: Set bot initials if no avatar image is set
+                userAvatarImage: 'https://example.com/user-avatar.png',  // Optional: Set user avatar image
+                userAvatarInitials: 'You'  // Optional: Set user initials if no avatar image is set
+            };
+
+            const store = window.WebChat.createStore({}, function ({ dispatch }) {
+                return function (next) {
+                    return function (action) {
+                        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+                            dispatch({
+                                type: 'WEB_CHAT/SEND_EVENT',
+                                payload: {
+                                    name: 'webchat/join',
+                                    value: { language: window.navigator.language }
+                                }
+                            });
+                        }
+                        return next(action);
+                    };
+                };
+            });
+
+            window.WebChat.renderWebChat(
+                {
+                    directLine: window.WebChat.createDirectLine({ secret }),
+                    styleOptions,
+                    store
+                },
+                document.getElementById('webchat')
+            );
+        });
+    </script>
+</body>
+</html>
+<!-- all copyright reversed to @Sneha Yadav -->
